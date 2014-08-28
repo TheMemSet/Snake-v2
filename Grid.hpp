@@ -6,6 +6,7 @@
 #include <ctime>
 #include <iostream> // For debugging purposes only
 #include <SFML/Graphics.hpp>
+#include "AI.hpp"
 
 enum Direction
 {
