@@ -37,8 +37,10 @@ int main()
                     grid.inputKey ('L');
                     break;
 
-                case sf::Keyboard::S:
+                case sf::Keyboard::R:
                     grid.inputKey ('S');
+                    break;
+                default:
                     break;
                 }
             }

@@ -42,7 +42,7 @@ void Grid::reset()
 
     for (uint8_t i = 0;i < 5;++i)
     {
-        snake.push_back (Segment (4 - i, 0, right));
+        snake.push_back (Segment ((gridWidth / 2) - i, gridHeight / 2, right));
     }
 
     addFruit();
@@ -127,16 +127,16 @@ void Grid::updateVertexArray()
         fruit [i].y *= CELL_SIZE;
 
         vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x, fruit [i].y),
-        sf::Color::Green));
+        fruitColor));
 
         vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x + (CELL_SIZE - GRID_GAP), fruit [i].y),
-        sf::Color::Green));
+        fruitColor));
 
         vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x + (CELL_SIZE - GRID_GAP), fruit [i].y + (CELL_SIZE - GRID_GAP)),
-        sf::Color::Green));
+        fruitColor));
 
         vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x, fruit [i].y + (CELL_SIZE - GRID_GAP)),
-        sf::Color::Green));
+        fruitColor));
 
         fruit [i].x /= CELL_SIZE;
         fruit [i].y /= CELL_SIZE;
@@ -148,16 +148,16 @@ void Grid::updateVertexArray()
         snake [i].y *= CELL_SIZE;
 
         vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x, snake [i].y),
-        (!i) ? sf::Color::Red : sf::Color::Yellow));
+        (!i) ? headColor : bodyColor));
 
         vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x + (CELL_SIZE - GRID_GAP), snake [i].y),
-        (!i) ? sf::Color::Red : sf::Color::Yellow));
+        (!i) ? headColor : bodyColor));
 
         vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x + (CELL_SIZE - GRID_GAP), snake [i].y + (CELL_SIZE - GRID_GAP)),
-        (!i) ? sf::Color::Red : sf::Color::Yellow));
+        (!i) ? headColor : bodyColor));
 
         vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x, snake [i].y + (CELL_SIZE - GRID_GAP)),
-        (!i) ? sf::Color::Red : sf::Color::Yellow));
+        (!i) ? headColor : bodyColor));
 
         snake [i].x /= CELL_SIZE;
         snake [i].y /= CELL_SIZE;

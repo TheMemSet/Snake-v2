@@ -46,12 +46,13 @@ class Segment
 
 class Grid : public sf::Drawable
 {
-    const uint8_t GRID_GAP    = 1;
-    const uint8_t CELL_SIZE   = 20;
-    const sf::Color bodyColor = sf::Color::Yellow;
-    const sf::Color headColor = sf::Color::Red;
-    const int8_t offX [4]     = {0, 1, 0, -1};
-    const int8_t offY [4]     = {-1, 0, 1, 0};
+    const uint8_t GRID_GAP     = 1;
+    const uint8_t CELL_SIZE    = 20;
+    const sf::Color bodyColor  = sf::Color::Yellow;
+    const sf::Color headColor  = sf::Color::Red;
+    const sf::Color fruitColor = sf::Color::Green;
+    const int8_t offX [4]      = {0, 1, 0, -1};
+    const int8_t offY [4]      = {-1, 0, 1, 0};
 
     bool            alive;
     uint8_t         gridWidth, gridHeight;
