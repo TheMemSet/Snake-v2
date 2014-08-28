@@ -17,15 +17,15 @@ enum Direction
 
 class Segment
 {
-    uint8_t x, uint8_t y;
-    Direction dir;
+    uint8_t x, y;
+    Direction next;
 
-    Segment (uint8_t x_in, uint8_t y_in, Direction dir_in)
+    Segment (uint8_t x_in, uint8_t y_in, Direction next_in)
     {
         x = x_in;
         y = y_in;
 
-        dir = dir_in;
+        next = next_in;
     }
 
     Segment () {}
@@ -35,20 +35,28 @@ class Segment
 
 class Grid : public sf::Drawable
 {
-    const uint8_t GRID_GAP = 1;
+    const uint8_t GRID_GAP    = 1;
+    const uint8_t CELL_SIZE   = 20;
+    const sf::Color bodyColor = sf::Color::Yellow;
+    const sf::Color headColor = sf::Color::Red;
+
     bool alive;
     uint8_t gridWidth, gridHeight;
     std::vector <std::vector <sf::Color>> cellColor;
-    std::vector <Segment> segment;
+    std::vector <Segment> snake;
+    sf::VertexArray vertArray;
+    uint32_t score = 0;
+    uint16_t speed = 8; // 8 blocks per second
 
     virtual void draw (sf::RenderTarget&, sf::RenderStates) const;
 
 public:
 
-    Grid     (uint8_t gridWidth_in, uint8_t gridHeight_in);
+    Grid     (uint8_t gridWidth, uint8_t gridHeight);
     void     updateSnake();
-    uint32_t getScore();
-    bool     isAlive();
+    void     updateVertexArray();
+    uint32_t getScore() const;
+    bool     isAlive() const;
     void     inputKey (sf::Keyboard);
     void     terminate();
 };
