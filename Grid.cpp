@@ -38,6 +38,7 @@ void Grid::reset()
     snake.clear();
     fruit.clear();
     alive = true;
+    score = 0;
 
     for (uint8_t i = 0;i < 5;++i)
     {
