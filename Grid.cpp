@@ -244,7 +244,7 @@ void Grid::addFruit()
         return;
     }
 
-    uint32_t nextFruitCell = (rand() % ((gridHeight * gridWidth) - snake.size() - 1)) + 1; // -1 because piece of fruit
+    uint32_t nextFruitCell = (rand() % ((gridHeight * gridWidth) - snake.size())) + 1;
 
     for (uint16_t xx = 0;xx < gridWidth;++xx)
     {
