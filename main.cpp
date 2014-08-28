@@ -3,9 +3,11 @@
 int main()
 {
     sf::RenderWindow window (sf::VideoMode (1280, 720), "Temporary title");
-    window.setFramerateLimit (30);
+    window.setFramerateLimit (8);
 
     sf::Event ev;
+
+    Grid grid (64, 36);
 
     while (window.isOpen ())
     {
@@ -13,11 +15,40 @@ int main()
         {
             if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Escape)
                 window.close ();
-            if (ev.type == sf::Event::Closed)
+            else if (ev.type == sf::Event::Closed)
                 window.close ();
+            else if (ev.type == sf::Event::KeyPressed)
+            {
+                switch (ev.key.code)
+                {
+                case sf::Keyboard::Up:
+                    grid.inputKey ('U');
+                    break;
+
+                case sf::Keyboard::Right:
+                    grid.inputKey ('R');
+                    break;
+
+                case sf::Keyboard::Down:
+                    grid.inputKey ('D');
+                    break;
+
+                case sf::Keyboard::Left:
+                    grid.inputKey ('L');
+                    break;
+
+                case sf::Keyboard::S:
+                    grid.inputKey ('S');
+                    break;
+                }
+            }
         }
 
-        window.clear ();
+        grid.updateSnake();
+        grid.updateVertexArray();
+
+        window.clear (sf::Color (120, 120, 120));
+        window.draw (grid);
         window.display ();
     }
     return 0;

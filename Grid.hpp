@@ -4,6 +4,7 @@
 #include <cinttypes>
 #include <vector>
 #include <ctime>
+#include <iostream> // For debugging purposes only
 #include <SFML/Graphics.hpp>
 
 enum Direction
@@ -16,16 +17,16 @@ enum Direction
 
 class Segment
 {
-    uint8_t x, y;
+    uint16_t x, y;
     Direction next;
 
-    Segment (uint8_t x_in, uint8_t y_in)
+    Segment (uint16_t x_in, uint16_t y_in)
     {
         x = x_in;
         y = y_in;
     }
 
-    Segment (uint8_t x_in, uint8_t y_in, Direction next_in)
+    Segment (uint16_t x_in, uint16_t y_in, Direction next_in)
     {
         x = x_in;
         y = y_in;
@@ -54,7 +55,6 @@ class Grid : public sf::Drawable
 
     bool            alive;
     uint8_t         gridWidth, gridHeight;
-    //std::vector     <std::vector <sf::Color>> cellColor; // I might not need cellColor
     std::vector     <Segment> snake;
     std::vector     <Segment> fruit;
     sf::VertexArray vertArray;
@@ -64,12 +64,15 @@ class Grid : public sf::Drawable
     bool    addSegment; //
     Segment newSegment; // Used by updateSnake
 
+
+    // Functions begin here:
     virtual void draw (sf::RenderTarget&, sf::RenderStates) const;
     void         reset();
     bool         testForCollision() const;
     void         addFruit();
     bool         fruitOn (Segment seg) const;
     bool         fruitOnRemove (Segment seg);
+    bool         snakeOn (Segment seg) const;
 
 public:
 

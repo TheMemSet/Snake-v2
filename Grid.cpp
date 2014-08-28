@@ -8,6 +8,8 @@ Grid::Grid (uint8_t gridWidth_in, uint8_t gridHeight_in) : alive (true)
 
     vertArray.setPrimitiveType (sf::Quads);
 
+    srand (time (NULL));
+
     reset();
 }
 
@@ -33,30 +35,25 @@ bool Grid::isAlive() const
 
 void Grid::reset()
 {
-    /*
-    cellColor.resize (gridWidth);
-
-    for (uint16_t i = 0;i < gridWidth;++i)
-    {
-        cellColor [i].resize (gridHeight);
-
-        for (uint16_t j = 0;j < gridHeight;++j)
-        {
-            cellColor [i] [j] = sf::Color::Black;
-        }
-    }
-    */ // I might not need cellColor
-
     snake.clear();
+    fruit.clear();
+    alive = true;
 
     for (uint8_t i = 0;i < 5;++i)
     {
         snake.push_back (Segment (4 - i, 0, right));
     }
+
+    addFruit();
 }
 
 void Grid::updateSnake()
 {
+    if (!alive)
+    {
+        return;
+    }
+
     snake [0].x += offX [snake [0].next];
     snake [0].y += offY [snake [0].next];
 
@@ -77,9 +74,9 @@ void Grid::updateSnake()
         snake [i].y += offY [snake [i].next];
     }
 
-    for (uint16_t i = snake.size() - 1;i > 0;++i)
+    for (uint16_t i = snake.size() - 1;i > 0;--i)
     {
-        snake [i].next = snake [i + 1].next;
+        snake [i].next = snake [i - 1].next;
     }
 
     if (addSegment)
@@ -116,6 +113,11 @@ bool Grid::testForCollision() const
 
 void Grid::updateVertexArray()
 {
+    if (!alive)
+    {
+        return;
+    }
+
     vertArray.clear();
 
     for (uint16_t i = 0;i < fruit.size();++i)
@@ -153,7 +155,7 @@ void Grid::updateVertexArray()
         vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x + (CELL_SIZE - GRID_GAP), snake [i].y + (CELL_SIZE - GRID_GAP)),
         (!i) ? sf::Color::Red : sf::Color::Yellow));
 
-        vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x, snake [i].y),
+        vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x, snake [i].y + (CELL_SIZE - GRID_GAP)),
         (!i) ? sf::Color::Red : sf::Color::Yellow));
 
         snake [i].x /= CELL_SIZE;
@@ -232,4 +234,41 @@ void Grid::inputKey (char key)
     default:
         exit (1001);
     }
+}
+
+void Grid::addFruit()
+{
+    if (((gridHeight * gridWidth) - snake.size() - 1) <= 0)
+    {
+        return;
+    }
+
+    uint32_t nextFruitCell = (rand() % ((gridHeight * gridWidth) - snake.size() - 1)) + 1; // -1 because piece of fruit
+
+    for (uint16_t xx = 0;xx < gridWidth;++xx)
+    {
+        for (uint16_t yy = 0;yy < gridHeight;++yy)
+        {
+            if (!(fruitOn (Segment (xx, yy)) || snakeOn (Segment (xx, yy))))
+            {
+                nextFruitCell--;
+
+                if (!nextFruitCell)
+                {
+                    fruit.push_back (Segment (xx, yy));
+                    return;
+                }
+            }
+        }
+    }
+}
+
+bool Grid::snakeOn (Segment seg) const
+{
+    for (uint32_t i = 0;i < snake.size();++i)
+    {
+        if (snake [i] == seg) return true;
+    }
+
+    return false;
 }
