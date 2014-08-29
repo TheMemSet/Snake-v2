@@ -4,6 +4,8 @@
 #include <cinttypes>
 #include <vector>
 #include <ctime>
+#include <string>
+#include <cstring>
 #include <iostream> // For debugging purposes only
 #include <SFML/Graphics.hpp>
 #include "AI.hpp"
@@ -54,14 +56,16 @@ class Grid : public sf::Drawable
     const sf::Color fruitColor = sf::Color::Green;
     const int8_t offX [4]      = {0, 1, 0, -1};
     const int8_t offY [4]      = {-1, 0, 1, 0};
+    const uint8_t defaultSpeed = 10;
 
+    bool            terminated = false; // Only used for exiting the program
     bool            alive;
     uint8_t         gridWidth, gridHeight;
     std::vector     <Segment> snake;
     std::vector     <Segment> fruit;
     sf::VertexArray vertArray;
     uint32_t        score = 0;
-    uint16_t        speed = 8; // 8 blocks per second
+    uint16_t        speed = defaultSpeed;
 
     bool    addSegment; //
     Segment newSegment; // Used by updateSnake
@@ -78,13 +82,15 @@ class Grid : public sf::Drawable
 
 public:
 
-    Grid     (uint8_t gridWidth, uint8_t gridHeight);
-    void     updateSnake();
-    void     updateVertexArray();
-    uint32_t getScore() const;
-    bool     isAlive() const;
-    void     inputKey (char);
-    void     terminate();
+    Grid        (uint8_t gridWidth, uint8_t gridHeight);
+    void        updateSnake();
+    void        updateVertexArray();
+    std::string getScore() const;
+    bool        isAlive() const;
+    void        inputKey (char);
+    uint16_t    getSpeed() const;
+    bool        isTerminated() const;
+    void        terminate();
 };
 
 #endif // GRID_HPP_INCLUDED

@@ -18,14 +18,20 @@ void Grid::draw (sf::RenderTarget& target, sf::RenderStates states) const
     target.draw (vertArray, states);
 }
 
-uint32_t Grid::getScore() const
+std::string Grid::getScore() const
 {
-    return score;
-}
+    std::string str;
+    uint32_t score_copy = score;
 
-void Grid::terminate()
-{
-    alive = false;
+    do
+    {
+        str += (score_copy % 10) + '0';
+        score_copy /= 10;
+    } while (score_copy > 0);
+
+    std::reverse (str.begin(), str.end());
+
+    return str;
 }
 
 bool Grid::isAlive() const
@@ -39,6 +45,7 @@ void Grid::reset()
     fruit.clear();
     alive = true;
     score = 0;
+    speed = defaultSpeed;
 
     for (uint8_t i = 0;i < 5;++i)
     {
@@ -195,28 +202,40 @@ void Grid::inputKey (char key)
     case 'U':
         if (snake [0].next != down)
         {
-            snake [0].next = up;
+            if (!(snake [1].y < snake [0].y))
+            {
+                snake [0].next = up;
+            }
         }
         break;
 
     case 'R':
         if (snake [0].next != left)
         {
-            snake [0].next = right;
+            if (!(snake [1].x > snake [0].x))
+            {
+                snake [0].next = right;
+            }
         }
         break;
 
     case 'D':
         if (snake [0].next != up)
         {
-            snake [0].next = down;
+            if (!(snake [1].y > snake [0].y))
+            {
+                snake [0].next = down;
+            }
         }
         break;
 
     case 'L':
         if (snake [0].next != right)
         {
-            snake [0].next = left;
+            if (!(snake [1].x < snake [0].x))
+            {
+                snake [0].next = left;
+            }
         }
         break;
 
@@ -225,16 +244,17 @@ void Grid::inputKey (char key)
         break;
 
     case 'A': // As in, "Accelerate"
-        speed++;
-        break;
-
-    case 'E': // As in, "Exit"
-        alive = false;
+        speed += 2;
         break;
 
     default:
         exit (1001);
     }
+}
+
+uint16_t Grid::getSpeed() const
+{
+    return speed;
 }
 
 void Grid::addFruit()
@@ -272,4 +292,14 @@ bool Grid::snakeOn (Segment seg) const
     }
 
     return false;
+}
+
+bool Grid::isTerminated() const
+{
+    return terminated;
+}
+
+void Grid::terminate()
+{
+    terminated = true;
 }
