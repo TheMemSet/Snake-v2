@@ -3,6 +3,11 @@
 
 Grid::Grid (uint8_t gridWidth_in, uint8_t gridHeight_in) : alive (true)
 {
+    if (!(textureAtlas.loadFromFile ("Resources/Atlas.png")))
+    {
+        exit (1004);
+    }
+
     gridHeight = gridHeight_in;
     gridWidth  = gridWidth_in;
 
@@ -15,28 +20,32 @@ Grid::Grid (uint8_t gridWidth_in, uint8_t gridHeight_in) : alive (true)
 
 void Grid::draw (sf::RenderTarget& target, sf::RenderStates states) const
 {
+    states.texture = &textureAtlas;
     target.draw (vertArray, states);
 }
 
 std::string Grid::getScore() const
 {
-    std::string str;
-    uint32_t score_copy = score;
-
-    do
-    {
-        str += (score_copy % 10) + '0';
-        score_copy /= 10;
-    } while (score_copy > 0);
-
-    std::reverse (str.begin(), str.end());
-
-    return str;
+    return scoreString;
 }
 
 bool Grid::isAlive() const
 {
     return alive;
+}
+
+void Grid::updateScoreString()
+{
+    scoreString.clear();
+    uint32_t score_copy = score;
+
+    do
+    {
+        scoreString += (score_copy % 10) + '0';
+        score_copy /= 10;
+    } while (score_copy > 0);
+
+    std::reverse (scoreString.begin(), scoreString.end());
 }
 
 void Grid::reset()
@@ -45,6 +54,7 @@ void Grid::reset()
     fruit.clear();
     alive = true;
     score = 0;
+    scoreString = "0";
     speed = defaultSpeed;
 
     for (uint8_t i = 0;i < 5;++i)
@@ -95,10 +105,13 @@ void Grid::updateSnake()
     if (fruitOn (snake [0]))
     {
         score += speed;
+        updateScoreString();
         addFruit();
     }
 
     alive = !testForCollision();
+
+    updateVertexArray();
 }
 
 bool Grid::testForCollision() const
@@ -117,58 +130,6 @@ bool Grid::testForCollision() const
     }
 
     return false;
-}
-
-void Grid::updateVertexArray()
-{
-    if (!alive)
-    {
-        return;
-    }
-
-    vertArray.clear();
-
-    for (uint16_t i = 0;i < fruit.size();++i)
-    {
-        fruit [i].x *= CELL_SIZE;
-        fruit [i].y *= CELL_SIZE;
-
-        vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x, fruit [i].y),
-        fruitColor));
-
-        vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x + (CELL_SIZE - GRID_GAP), fruit [i].y),
-        fruitColor));
-
-        vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x + (CELL_SIZE - GRID_GAP), fruit [i].y + (CELL_SIZE - GRID_GAP)),
-        fruitColor));
-
-        vertArray.append (sf::Vertex (sf::Vector2f (fruit [i].x, fruit [i].y + (CELL_SIZE - GRID_GAP)),
-        fruitColor));
-
-        fruit [i].x /= CELL_SIZE;
-        fruit [i].y /= CELL_SIZE;
-    }
-
-    for (uint16_t i = 0;i < snake.size();++i)
-    {
-        snake [i].x *= CELL_SIZE;
-        snake [i].y *= CELL_SIZE;
-
-        vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x, snake [i].y),
-        (!i) ? headColor : bodyColor));
-
-        vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x + (CELL_SIZE - GRID_GAP), snake [i].y),
-        (!i) ? headColor : bodyColor));
-
-        vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x + (CELL_SIZE - GRID_GAP), snake [i].y + (CELL_SIZE - GRID_GAP)),
-        (!i) ? headColor : bodyColor));
-
-        vertArray.append (sf::Vertex (sf::Vector2f (snake [i].x, snake [i].y + (CELL_SIZE - GRID_GAP)),
-        (!i) ? headColor : bodyColor));
-
-        snake [i].x /= CELL_SIZE;
-        snake [i].y /= CELL_SIZE;
-    }
 }
 
 bool Grid::fruitOn (Segment seg) const
@@ -302,4 +263,27 @@ bool Grid::isTerminated() const
 void Grid::terminate()
 {
     terminated = true;
+}
+
+void Grid::rotateSegment (uint16_t firstVertex, uint16_t nRot)
+{
+    //std::cout << firstVertex << " " << snake.size() << '\n';
+    if (nRot > 3)
+    {
+        exit (1003);
+    }
+
+    else
+    {
+        sf::Vertex tempVertex;
+
+        for (uint8_t i = 0;i < nRot;++i)
+        {
+            tempVertex = vertArray [firstVertex + 3];
+            vertArray [firstVertex + 3] = vertArray [firstVertex + 2];
+            vertArray [firstVertex + 2] = vertArray [firstVertex + 1];
+            vertArray [firstVertex + 1] = vertArray [firstVertex];
+            vertArray [firstVertex] = tempVertex;
+        }
+    }
 }

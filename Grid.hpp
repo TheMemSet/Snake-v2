@@ -49,14 +49,19 @@ class Segment
 
 class Grid : public sf::Drawable
 {
-    const uint8_t GRID_GAP     = 1;
     const uint8_t CELL_SIZE    = 20;
-    const sf::Color bodyColor  = sf::Color::Yellow;
-    const sf::Color headColor  = sf::Color::Red;
+    //const sf::Color bodyColor  = sf::Color::Yellow;
+    //const sf::Color headColor  = sf::Color::Red;
     const sf::Color fruitColor = sf::Color::Green;
     const int8_t offX [4]      = {0, 1, 0, -1};
     const int8_t offY [4]      = {-1, 0, 1, 0};
     const uint8_t defaultSpeed = 10;
+
+    const uint16_t TEXTURE_SIZE   = 64;
+    const uint16_t headTextureX   = 128, headTextureY   = 64;
+    const uint16_t bodyTextureX   =  64, bodyTextureY   = 64;
+    const uint16_t tailTextureX   =   0, tailTextureY   =  0;
+    const uint16_t cornerTextureX =   0, cornerTextureY = 64;
 
     bool            terminated = false; // Only used for exiting the program
     bool            alive;
@@ -65,7 +70,10 @@ class Grid : public sf::Drawable
     std::vector     <Segment> fruit;
     sf::VertexArray vertArray;
     uint32_t        score = 0;
+    std::string     scoreString = "0";
     uint16_t        speed = defaultSpeed;
+
+    sf::Texture     textureAtlas;
 
     bool    addSegment; //
     Segment newSegment; // Used by updateSnake
@@ -79,12 +87,14 @@ class Grid : public sf::Drawable
     bool         fruitOn (Segment seg) const;
     bool         fruitOnRemove (Segment seg);
     bool         snakeOn (Segment seg) const;
+    void         rotateSegment (uint16_t firstVertex, uint16_t nRot);
+    void         updateScoreString();
+    void         updateVertexArray();
 
 public:
 
     Grid        (uint8_t gridWidth, uint8_t gridHeight);
     void        updateSnake();
-    void        updateVertexArray();
     std::string getScore() const;
     bool        isAlive() const;
     void        inputKey (char);

@@ -16,7 +16,7 @@ int main()
 
     if (!(font.loadFromFile ("Resources/cambria.ttc")))
     {
-        return 0;
+        return 1002;
     }
 
     text.setFont (font);
@@ -38,8 +38,6 @@ int main()
             else if (ev.type == sf::Event::Closed)
                 window.close ();
         }
-
-        grid.updateVertexArray();
 
         window.clear   (sf::Color (120, 120, 120));
         window.draw    (grid);

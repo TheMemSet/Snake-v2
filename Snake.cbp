@@ -11,7 +11,6 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DSFML_STATIC" />
@@ -45,6 +44,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Grid Vertex Arrays.cpp" />
 		<Unit filename="Grid.cpp" />
 		<Unit filename="Grid.hpp" />
 		<Unit filename="main.cpp" />
