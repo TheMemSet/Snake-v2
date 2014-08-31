@@ -11,8 +11,6 @@ Grid::Grid (uint8_t gridWidth_in, uint8_t gridHeight_in) : alive (true)
     gridHeight = gridHeight_in;
     gridWidth  = gridWidth_in;
 
-    vertArray.setPrimitiveType (sf::Quads);
-
     srand (time (NULL));
 
     reset();
@@ -20,8 +18,10 @@ Grid::Grid (uint8_t gridWidth_in, uint8_t gridHeight_in) : alive (true)
 
 void Grid::draw (sf::RenderTarget& target, sf::RenderStates states) const
 {
-    states.texture = &textureAtlas;
-    target.draw (vertArray, states);
+    for (uint16_t i = 0;i < spriteArray.size();++i)
+    {
+        target.draw (spriteArray [i], states);
+    }
 }
 
 std::string Grid::getScore() const
@@ -109,9 +109,10 @@ void Grid::updateSnake()
         addFruit();
     }
 
-    alive = !testForCollision();
-
-    updateVertexArray();
+    if (alive = !testForCollision())
+    {
+        updateSpriteArray();
+    }
 }
 
 bool Grid::testForCollision() const
@@ -263,27 +264,4 @@ bool Grid::isTerminated() const
 void Grid::terminate()
 {
     terminated = true;
-}
-
-void Grid::rotateSegment (uint16_t firstVertex, uint16_t nRot)
-{
-    //std::cout << firstVertex << " " << snake.size() << '\n';
-    if (nRot > 3)
-    {
-        exit (1003);
-    }
-
-    else
-    {
-        sf::Vertex tempVertex;
-
-        for (uint8_t i = 0;i < nRot;++i)
-        {
-            tempVertex = vertArray [firstVertex + 3];
-            vertArray [firstVertex + 3] = vertArray [firstVertex + 2];
-            vertArray [firstVertex + 2] = vertArray [firstVertex + 1];
-            vertArray [firstVertex + 1] = vertArray [firstVertex];
-            vertArray [firstVertex] = tempVertex;
-        }
-    }
 }

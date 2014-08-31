@@ -44,7 +44,6 @@ int main()
         text.setString ("Score: " + grid.getScore());
         window.draw    (text);
 
-
         window.display();
     }
 

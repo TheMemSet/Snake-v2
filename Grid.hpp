@@ -8,7 +8,6 @@
 #include <cstring>
 #include <iostream> // For debugging purposes only
 #include <SFML/Graphics.hpp>
-#include "AI.hpp"
 
 enum Direction
 {
@@ -50,33 +49,36 @@ class Segment
 class Grid : public sf::Drawable
 {
     const uint8_t CELL_SIZE    = 20;
-    //const sf::Color bodyColor  = sf::Color::Yellow;
-    //const sf::Color headColor  = sf::Color::Red;
-    const sf::Color fruitColor = sf::Color::Green;
     const int8_t offX [4]      = {0, 1, 0, -1};
     const int8_t offY [4]      = {-1, 0, 1, 0};
     const uint8_t defaultSpeed = 10;
 
-    const uint16_t TEXTURE_SIZE   = 64;
     const uint16_t headTextureX   = 128, headTextureY   = 64;
     const uint16_t bodyTextureX   =  64, bodyTextureY   = 64;
     const uint16_t tailTextureX   =   0, tailTextureY   =  0;
     const uint16_t cornerTextureX =   0, cornerTextureY = 64;
+
+    sf::Texture     textureAtlas;
+    sf::Sprite      headSprite;
+    sf::Sprite      bodySprite;
+    sf::Sprite      tailSprite;
+    sf::Sprite      cornerSprite;
+    sf::Sprite      fruitSprite; // Currently using body texture coordinates
+    sf::Sprite      backgroundSprite; // Unimplemented
 
     bool            terminated = false; // Only used for exiting the program
     bool            alive;
     uint8_t         gridWidth, gridHeight;
     std::vector     <Segment> snake;
     std::vector     <Segment> fruit;
-    sf::VertexArray vertArray;
+    std::vector     <sf::Sprite>  spriteArray;
     uint32_t        score = 0;
     std::string     scoreString = "0";
     uint16_t        speed = defaultSpeed;
 
-    sf::Texture     textureAtlas;
-
-    bool    addSegment; //
-    Segment newSegment; // Used by updateSnake
+    bool       addSegment; //
+    Segment    newSegment; // Used by updateSnake
+    //sf::Sprite newSprite; // Used by updateVertexArray
 
 
     // Functions begin here:
@@ -87,9 +89,8 @@ class Grid : public sf::Drawable
     bool         fruitOn (Segment seg) const;
     bool         fruitOnRemove (Segment seg);
     bool         snakeOn (Segment seg) const;
-    void         rotateSegment (uint16_t firstVertex, uint16_t nRot);
     void         updateScoreString();
-    void         updateVertexArray();
+    void         updateSpriteArray();
 
 public:
 
